@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static jkassner.com.br.apiloteria.sql.MegaSenaSql.find_concursos_by_dezenas;
+import jkassner.com.br.apiloteria.sql.MegaSenaSql;
 
 @Repository
 public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long> {
 
     ConcursoMegaSena findByIdConcurso(Long id);
 
-    @Query(value = find_concursos_by_dezenas, nativeQuery = true)
+    @Query(value = MegaSenaSql.FIND_CONCURSOS_BY_ID_DEZENA, nativeQuery = true)
     List<ConcursoMegaSena> findConcursosByDezenas(@Param("primeira") int primeira, @Param("ultima") int ultima);
 }

@@ -2,7 +2,7 @@ package jkassner.com.br.apiloteria.sql
 
 class MegaSenaSql {
 
-    public static final String find_concursos_by_dezenas = """
+    public static final String FIND_CONCURSOS_BY_ID_DEZENA = """
         SELECT
             sena.*
         FROM
