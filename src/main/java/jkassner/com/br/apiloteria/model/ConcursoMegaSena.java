@@ -78,7 +78,7 @@ public class ConcursoMegaSena implements Serializable {
     @Column(name = "vl_arrecadacao_total", nullable = false)
     private BigDecimal vlArrecadacaoTotal;
 
-    @OneToMany(mappedBy = "megaSena", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "concursoMegaSena", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Cidade> cidades = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
