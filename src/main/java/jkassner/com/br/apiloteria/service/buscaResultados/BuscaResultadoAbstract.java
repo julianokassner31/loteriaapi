@@ -20,7 +20,7 @@ import java.util.zip.ZipInputStream;
 public abstract class BuscaResultadoAbstract implements BuscaResultado {
 
     protected TipoLoteria tipoLoteria;
-    private static final String PATH_SAVE = "/home/jkassner/Downloads/";
+    private static final String PATH_SAVE = System.getProperty("java.io.tmpdir").concat("/");
     private static final String URI = "http://www1.caixa.gov.br/loterias/_arquivos/loterias/";
 
     public void baixaResultados() throws IOException {
@@ -33,6 +33,10 @@ public abstract class BuscaResultadoAbstract implements BuscaResultado {
 
         InputStream is = entity.getContent();
         String filePath = PATH_SAVE.concat(tipoLoteria.getArquivoZip());
+        
+        new File(PATH_SAVE.concat(tipoLoteria.getArquivoZip())).delete();
+        new File(PATH_SAVE.concat(tipoLoteria.getArquivoHtm())).delete();
+        
         FileOutputStream fos = new FileOutputStream(new File(filePath));
 
         int inByte;
@@ -46,7 +50,7 @@ public abstract class BuscaResultadoAbstract implements BuscaResultado {
     }
 
     public void unzipArquivosBaixados() throws IOException {
-        String filePath = PATH_SAVE.concat(tipoLoteria.getArquivoHtm());
+        String filePath = PATH_SAVE.concat(tipoLoteria.getArquivoZip());
         FileOutputStream fos;
         ZipInputStream zis = new ZipInputStream(new FileInputStream(filePath));
         ZipEntry zipEntry = zis.getNextEntry();
