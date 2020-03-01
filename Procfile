@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT target/loteria-api.war $JAVA_OPTS -jar build/libs/app.jar 
+web: java -Dserver.port=$PORT target/api-loteria-0.0.1-SNAPSHOT.war $JAVA_OPTS -jar build/libs/app.jar 
