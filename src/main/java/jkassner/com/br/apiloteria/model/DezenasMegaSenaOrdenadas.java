@@ -3,19 +3,24 @@ package jkassner.com.br.apiloteria.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="dezenas_mega_sena_ordenadas")
 @Getter
 @Setter
-public class DezenasMegaSenaOrdenadas {
+public class DezenasMegaSenaOrdenadas implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(mappedBy = "dezenasMegaSenaOrdenadas")
+    @JsonBackReference
     private ConcursoMegaSena concursoMegaSena;
 
     @Column(name = "primeira", nullable = false)

@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -83,6 +87,7 @@ public class ConcursoMegaSena implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_dezenas_ordenadas", referencedColumnName = "id")
+    @JsonIgnore
     DezenasMegaSenaOrdenadas dezenasMegaSenaOrdenadas;
 
     @Override

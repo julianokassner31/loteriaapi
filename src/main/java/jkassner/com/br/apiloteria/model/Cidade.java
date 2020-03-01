@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 @Entity
@@ -23,6 +26,7 @@ public class Cidade implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_concurso_megasena", referencedColumnName = "id_concurso")
+    @JsonIgnore
     private ConcursoMegaSena concursoMegaSena;
 
 }

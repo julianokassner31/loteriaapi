@@ -8,13 +8,39 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import jkassner.com.br.apiloteria.sql.MegaSenaSql;
 
 @Repository
 public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long> {
 
-    ConcursoMegaSena findByIdConcurso(Long id);
+    ConcursoMegaSena findByIdConcurso(Long idConcurso);
 
-    @Query(value = MegaSenaSql.FIND_CONCURSOS_BY_ID_DEZENA, nativeQuery = true)
-    List<ConcursoMegaSena> findConcursosByDezenas(@Param("primeira") int primeira, @Param("ultima") int ultima);
+    @Query(name = "ConcursoMegaSena.findSenas")
+    List<ConcursoMegaSena> findSenas(
+        @Param("primeira") int primeira,
+        @Param("segunda") int segunda,
+        @Param("terceira") int terceira,
+        @Param("quarta") int quarta,
+        @Param("quinta") int quinta,
+        @Param("sexta") int sexta
+    );
+
+    @Query(name = "ConcursoMegaSena.findQuinas")
+    List<ConcursoMegaSena> findQuinas(
+        @Param("primeira") int primeira,
+        @Param("segunda") int segunda,
+        @Param("terceira") int terceira,
+        @Param("quarta") int quarta,
+        @Param("quinta") int quinta,
+        @Param("sexta") int sexta
+    );
+
+//    @Query(name = "ConcursoMegaSena.findQuadras")
+//    List<ConcursoMegaSena> findQuadras(
+//            @Param("primeira") int primeira,
+//            @Param("segunda") int segunda,
+//            @Param("terceira") int terceira,
+//            @Param("quarta") int quarta,
+//            @Param("quinta") int quinta,
+//            @Param("sexta") int sexta
+//    );
 }

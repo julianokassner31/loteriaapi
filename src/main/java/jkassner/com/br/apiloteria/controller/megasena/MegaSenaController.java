@@ -1,6 +1,7 @@
 package jkassner.com.br.apiloteria.controller.megasena;
 
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
+import jkassner.com.br.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
 import jkassner.com.br.apiloteria.service.buscaResultados.BuscaResultado;
 import jkassner.com.br.apiloteria.service.megasena.ConcursoMegaSenaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/megasena")
@@ -18,6 +20,9 @@ public class MegaSenaController {
 
     @Autowired
     ConcursoMegaSenaService concursoMegaSenaService;
+
+    @Autowired
+    ConcursoMegaSenaRepository concursoMegaSenaRepository;
 
     @Autowired
     @Qualifier("buscaResultadoMegaSenaService")
@@ -30,10 +35,11 @@ public class MegaSenaController {
         return ResponseEntity.ok(concursoMegaSena);
     }
 
-    @PostMapping("/find-concursos")
-    public ResponseEntity<?> findConcursos(List<Integer> dezenasUsuario) {
-        List<ConcursoMegaSena> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(dezenasUsuario);
-        return ResponseEntity.ok().build();
+    @GetMapping("/find-concursos")
+    public ResponseEntity<?> findConcursos(@RequestParam(value="dezenasUsuario") List<Integer> dezenasUsuario) {
+        Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, false, dezenasUsuario);
+
+        return ResponseEntity.ok(concursosByDezenas);
     }
 
     @GetMapping(value="/populaResultados")
@@ -42,5 +48,4 @@ public class MegaSenaController {
 
         return ResponseEntity.noContent().build();
     }
-
 }

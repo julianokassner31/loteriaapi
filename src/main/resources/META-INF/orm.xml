@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+                 version="2.0">
+
+    <named-query name="ConcursoMegaSena.findSenas">
+        <query>
+            select s from ConcursoMegaSena s where s.id in (
+                select
+                    sena.id
+                from
+                    ConcursoMegaSena sena
+                where
+                    sena.dezenasMegaSenaOrdenadas.primeira = :primeira
+                and
+                    sena.dezenasMegaSenaOrdenadas.segunda = :segunda
+                and
+                    sena.dezenasMegaSenaOrdenadas.terceira = :terceira
+                and
+                    sena.dezenasMegaSenaOrdenadas.quarta = :quarta
+                and
+                    sena.dezenasMegaSenaOrdenadas.quinta = :quinta
+                and
+                    sena.dezenasMegaSenaOrdenadas.sexta = :sexta
+            )
+        </query>
+    </named-query>
+
+    <named-query name="ConcursoMegaSena.findQuinas">
+        <query><![CDATA[
+            select q from ConcursoMegaSena q where q.id in (
+                    select
+                        quina.id
+                    from
+                        ConcursoMegaSena quina
+                    where
+                        quina.dezenasMegaSenaOrdenadas.primeira = :primeira
+                    and (
+                       		quina.dezenasMegaSenaOrdenadas.quinta = :quinta
+                    	or
+                        	quina.dezenasMegaSenaOrdenadas.quinta = :sexta
+                       	or
+                       		quina.dezenasMegaSenaOrdenadas.sexta = :quinta
+                    	or
+                    		quina.dezenasMegaSenaOrdenadas.sexta = :sexta
+                        )
+                ) or q.id in (
+                	select
+                        quina.id
+                    from
+                        ConcursoMegaSena quina
+                    where
+                        quina.dezenasMegaSenaOrdenadas.segunda = :primeira
+                    and (
+                    		quina.dezenasMegaSenaOrdenadas.quinta = :sexta
+                    	or
+                    		quina.dezenasMegaSenaOrdenadas.sexta = :sexta
+                	)
+               	) or q.id in (
+               		select
+                        quina.id
+                    from
+                        ConcursoMegaSena quina
+                    where
+                        quina.dezenasMegaSenaOrdenadas.primeira = :segunda
+                    and (
+                    		quina.dezenasMegaSenaOrdenadas.sexta = :sexta
+                    	or
+                    		quina.dezenasMegaSenaOrdenadas.sexta = :quinta
+                    )
+               	) or q.id in (
+               		select
+                        quina.id
+                    from
+                        ConcursoMegaSena quina
+                    where
+                        quina.dezenasMegaSenaOrdenadas.segunda = :segunda
+                    and
+                    	quina.dezenasMegaSenaOrdenadas.terceira = :terceira
+                   	and
+                   		quina.dezenasMegaSenaOrdenadas.quarta = :quarta
+                  	and
+                  		quina.dezenasMegaSenaOrdenadas.quinta = :quinta
+                  	and
+                  		quina.dezenasMegaSenaOrdenadas.sexta = :sexta
+               	)
+        ]]></query>
+    </named-query>
+
+</entity-mappings>
