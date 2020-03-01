@@ -1,18 +1,23 @@
 package jkassner.com.br.apiloteria.controller.megasena;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.sentry.SentryClient;
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
 import jkassner.com.br.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
 import jkassner.com.br.apiloteria.service.buscaResultados.BuscaResultado;
 import jkassner.com.br.apiloteria.service.megasena.ConcursoMegaSenaService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/megasena")
@@ -27,6 +32,9 @@ public class MegaSenaController {
     @Autowired
     @Qualifier("buscaResultadoMegaSenaService")
     BuscaResultado buscaResultado;
+    
+    @Autowired
+    SentryClient sentryClient;
 
     @GetMapping("/{idConcurso}")
     public ResponseEntity<?> getConcurso(@PathVariable("idConcurso") Long idConcurso) {
@@ -37,7 +45,8 @@ public class MegaSenaController {
 
     @GetMapping("/find-concursos")
     public ResponseEntity<?> findConcursos(@RequestParam(value="dezenasUsuario") List<Integer> dezenasUsuario) {
-        Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, false, dezenasUsuario);
+    	sentryClient.sendMessage("Inciando busca por concursos premiados");
+    	Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, false, dezenasUsuario);
 
         return ResponseEntity.ok(concursosByDezenas);
     }
