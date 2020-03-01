@@ -57,4 +57,9 @@ public class MegaSenaController {
 
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping(value="/")
+    public ResponseEntity<?> helloWorld() throws IOException {
+        return ResponseEntity.ok("Hello World Heroku");
+    }
 }
