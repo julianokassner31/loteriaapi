@@ -25,7 +25,7 @@ public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSe
     );
 
     @Query(name = "ConcursoMegaSena.findQuinas")
-    List<ConcursoMegaSena> findQuinas(
+    List<ConcursoMegaSena> findPossiveisQuinasEQuadras(
         @Param("primeira") int primeira,
         @Param("segunda") int segunda,
         @Param("terceira") int terceira,
@@ -33,14 +33,4 @@ public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSe
         @Param("quinta") int quinta,
         @Param("sexta") int sexta
     );
-
-//    @Query(name = "ConcursoMegaSena.findQuadras")
-//    List<ConcursoMegaSena> findQuadras(
-//            @Param("primeira") int primeira,
-//            @Param("segunda") int segunda,
-//            @Param("terceira") int terceira,
-//            @Param("quarta") int quarta,
-//            @Param("quinta") int quinta,
-//            @Param("sexta") int sexta
-//    );
 }

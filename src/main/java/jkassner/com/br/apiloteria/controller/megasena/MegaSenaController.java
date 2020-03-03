@@ -46,7 +46,7 @@ public class MegaSenaController {
     @GetMapping("/find-concursos")
     public ResponseEntity<?> findConcursos(@RequestParam(value="dezenasUsuario") List<Integer> dezenasUsuario) {
     	sentryClient.sendMessage("Inciando busca por concursos premiados");
-    	Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, false, dezenasUsuario);
+    	Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, true, dezenasUsuario);
 
         return ResponseEntity.ok(concursosByDezenas);
     }
@@ -56,10 +56,5 @@ public class MegaSenaController {
         buscaResultado.populaResultados();
 
         return ResponseEntity.noContent().build();
-    }
-    
-    @GetMapping(value="/")
-    public ResponseEntity<?> helloWorld() throws IOException {
-        return ResponseEntity.ok("Hello World Heroku");
     }
 }
