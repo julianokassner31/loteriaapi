@@ -45,9 +45,15 @@ public class MegaSenaController {
 
     @GetMapping("/find-concursos")
     public ResponseEntity<?> findConcursos(@RequestParam(value="dezenasUsuario") List<Integer> dezenasUsuario) {
-    	sentryClient.sendMessage("Inciando busca por concursos premiados");
+    	
+    	sentryClient.sendMessage("Iniciando busca por concursos premiados");
+    	
     	Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, true, dezenasUsuario);
-
+    	
+    	if (concursosByDezenas.isEmpty()) {
+    		return ResponseEntity.noContent().build();
+    	}
+    	
         return ResponseEntity.ok(concursosByDezenas);
     }
 

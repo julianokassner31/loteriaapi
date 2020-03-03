@@ -42,7 +42,10 @@ public class ConcursoMegaSenaServiceImpl implements ConcursoMegaSenaService {
         
         if (findSena) {
         	senas = concursoMegaSenaRepository.findSenas(primeira, segunda, terceira, quarta, quinta, sexta);
-            concursosMap.put("senas", senas);
+            
+        	if (!senas.isEmpty()) {
+        		concursosMap.put("senas", senas);        		
+        	}
         }
         
         if(senas.isEmpty()) {
@@ -52,12 +55,18 @@ public class ConcursoMegaSenaServiceImpl implements ConcursoMegaSenaService {
         	if (findQuina) {
         		List<ConcursoMegaSena> quinas  = getConcursosQuinasEQuadras(true, possiveisQuinasQuadras, primeira, segunda, terceira, quarta, quinta, sexta);
         		possiveisQuinasQuadras.removeAll(quinas);
-        		concursosMap.put("quinas", quinas);
-            }
+        		
+        		if (!quinas.isEmpty()) {
+        			concursosMap.put("quinas", quinas);
+        		}
+        	}
 
             if (findQuadra) {
             	List<ConcursoMegaSena> quadras  = getConcursosQuinasEQuadras(false, possiveisQuinasQuadras, primeira, segunda, terceira, quarta, quinta, sexta);
-            	concursosMap.put("quadras", quadras);
+            	
+            	if (!quadras.isEmpty()) {
+            		concursosMap.put("quadras", quadras);
+            	}
             }
         }
 
