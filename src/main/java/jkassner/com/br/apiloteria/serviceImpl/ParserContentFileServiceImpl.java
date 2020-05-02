@@ -1,10 +1,14 @@
 package jkassner.com.br.apiloteria.serviceImpl;
 
-import jkassner.com.br.apiloteria.model.Cidade;
-import jkassner.com.br.apiloteria.model.DezenasMegaSenaOrdenadas;
-import jkassner.com.br.apiloteria.repository.MegaSenaRepository;
-import jkassner.com.br.apiloteria.service.DownloadService;
-import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.hibernate.exception.DataException;
 import org.jsoup.Jsoup;
@@ -15,11 +19,11 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import jkassner.com.br.apiloteria.model.Cidade;
+import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
+import jkassner.com.br.apiloteria.model.DezenasMegaSenaOrdenadas;
+import jkassner.com.br.apiloteria.repository.MegaSenaRepository;
+import jkassner.com.br.apiloteria.service.DownloadService;
 
 @Service("parseContentFileServiceImpl")
 public class ParserContentFileServiceImpl extends ParserContentFileAbstract {
@@ -55,25 +59,8 @@ public class ParserContentFileServiceImpl extends ParserContentFileAbstract {
                 // primeira tr vem os th, pulo
                 if (!concurso.isEmpty()) continue;
                 
-                ConcursoMegaSena concursoMegaSena = parserTrToConcursoMegaSena(trDadosConcurso);
-                Elements tdsDados = trDadosConcurso.getElementsByTag("td");
-                int nrRowspan = Integer.parseInt(tdsDados.get(0).attributes().get("rowspan"));
-                if (nrRowspan > 1) {
-
-                    // criado porque la encima ja contei uma tr
-                    int count = nrRowspan - 1;
-                    for (int i = 0; i < count; i++) {
-
-                        // tr com as cidades vem separado do concurso
-                        Element trCidades = iterator.next();
-                        Elements tdsCidadesUf = trCidades.getElementsByTag("td");
-                        Element elCidade = tdsCidadesUf.get(0);
-                        Element elUf = tdsCidadesUf.get(1);
-                        
-                        addCidade(concursoMegaSena, elCidade, elUf);
-                    }
-                }
-
+                ConcursoMegaSena concursoMegaSena = parserTrToConcursoMegaSena(trDadosConcurso, iterator);
+                
                 concursoMegaSenaRepository.save(concursoMegaSena);
 
             }catch(DataException dataException) {
@@ -88,7 +75,7 @@ public class ParserContentFileServiceImpl extends ParserContentFileAbstract {
     }
     
     @Override
-    public ConcursoMegaSena parserTrToConcursoMegaSena(Element trDadosConcurso) {
+    public ConcursoMegaSena parserTrToConcursoMegaSena(Element trDadosConcurso, Iterator<Element> iterator) {
 
         Elements tdsDados = trDadosConcurso.getElementsByTag("td");
         ConcursoMegaSena concursoMegaSena = new ConcursoMegaSena();
@@ -119,6 +106,23 @@ public class ParserContentFileServiceImpl extends ParserContentFileAbstract {
         concursoMegaSena.setVlAcumulado(converterToBigDecimal(18, tdsDados));
         concursoMegaSena.setVlEstimativaPremio(converterToBigDecimal(19, tdsDados));
         concursoMegaSena.setVlAcumuladoMegaVirada(converterToBigDecimal(20, tdsDados));
+        
+        int nrRowspan = Integer.parseInt(tdsDados.get(0).attributes().get("rowspan"));
+        if (nrRowspan > 1) {
+
+            // criado porque la encima ja contei uma tr
+            int count = nrRowspan - 1;
+            for (int i = 0; i < count; i++) {
+
+                // tr com as cidades vem separado do concurso
+                Element trCidades = iterator != null ? iterator.next() : trDadosConcurso.nextElementSibling();
+                Elements tdsCidadesUf = trCidades.getElementsByTag("td");
+                elCidade = tdsCidadesUf.get(0);
+                elUf = tdsCidadesUf.get(1);
+                
+                addCidade(concursoMegaSena, elCidade, elUf);
+            }
+        }
         
         return concursoMegaSena;
     }

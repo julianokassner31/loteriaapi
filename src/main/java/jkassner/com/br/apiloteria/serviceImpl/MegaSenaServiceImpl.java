@@ -1,13 +1,14 @@
 package jkassner.com.br.apiloteria.serviceImpl;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class MegaSenaServiceImpl implements MegaSenaService {
 
 	@Autowired
 	DownloadService downloadTodosConcursosZipMegaSena;
-	
+
 	@Autowired
 	ParserContentFileService parseContentFileServiceImpl;
 
@@ -134,58 +135,108 @@ public class MegaSenaServiceImpl implements MegaSenaService {
 		}).collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ConcursoMegaSena getUltimoConcurso() {
-		ConcursoMegaSena ultimoConcurso = megaSenaRepository.findFirstByOrderByDtSorteioDesc();
-		Date dtSorteio = ultimoConcurso.getDtSorteio();
+		ConcursoMegaSena ultimoConcursoLocal = megaSenaRepository.findFirstByOrderByDtSorteioDesc();
 
-		LocalDate data = LocalDate.of(dtSorteio.getYear(), dtSorteio.getMonth(), dtSorteio.getDay());
+		LocalDate dataConcurso = Instant.ofEpochMilli(ultimoConcursoLocal.getDtSorteio().getTime())
+				.atZone(ZoneId.systemDefault()).toLocalDate();
+
 		LocalDateTime agora = LocalDateTime.now();
 
-		if (concursoEDeHoje(data, agora.toLocalDate())) {
-			return ultimoConcurso;
+		if (concursoEDeHoje(dataConcurso, agora.toLocalDate())) {
+			return ultimoConcursoLocal;
 		}
 
 		if (hojeSaiuConcurso(agora)) {
-			return boraBuscarConcursoNaNet(ultimoConcurso);
+			return boraBuscarConcursoAtual(ultimoConcursoLocal);
 		}
 
-		if (ultimoConcursoOcorreuA4Dias(agora.toLocalDate(), data)) {
-			return boraBuscarConcursoNaNet(ultimoConcurso);
+		if (ultimoConcursoOcorreuA4Dias(dataConcurso, agora.toLocalDate())) {
+			return boraBuscarConcursoAtual(ultimoConcursoLocal);
 		}
 
-		return ultimoConcurso;
+		return ultimoConcursoLocal;
 	}
-	
-	public ConcursoMegaSena boraBuscarConcursoNaNet(ConcursoMegaSena ultimoConcurso) {
+
+	public ConcursoMegaSena boraBuscarConcursoAtual(ConcursoMegaSena ultimoConcursoLocal) {
 		String contentFile = downloadTodosConcursosZipMegaSena.download();
 		Document doc = Jsoup.parse(contentFile);
-        Elements tables = doc.getElementsByTag("table");
-        Element table = tables.first();
-        Elements td = table.select("td:eq(0):matches("+ ultimoConcurso.getIdConcurso() +")");
-        Element tr = td.parents().get(0);
-        ConcursoMegaSena concursoMegaSena = parseContentFileServiceImpl
-        		.parserTrToConcursoMegaSena(tr.nextElementSibling());// TODO quando tem um rowspan >1 da pau
+		Element tableConcursos = getTableConcursos(doc);
+		Element trUltimoConcursoLocal = getTrUltimoConcursoLocal(tableConcursos, ultimoConcursoLocal);
+		
+		// quando o ultimo concurso ainda continua sendo o da base local
+		// demora as vez para atualizar o aqruivo com o concurso mais recente
+		if (trUltimoConcursoLocal.nextElementSibling() == null) {
+			return ultimoConcursoLocal;
+		}
+		
+		Element trUltimoConcursoWeb = getTrUltimoConcursoWeb(trUltimoConcursoLocal);
+
+		ConcursoMegaSena concursoMegaSena = parseContentFileServiceImpl.parserTrToConcursoMegaSena(trUltimoConcursoWeb,
+				null);
+
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Depois gravo no banco id: "+ concursoMegaSena.getIdConcurso());
 				megaSenaRepository.save(concursoMegaSena);
 			}
 		};
-		
+
 		new Thread(runnable).start();
-		
-		System.out.println("Primeiro retorno");
-        return concursoMegaSena;
+
+		return concursoMegaSena;
 	}
 
-	private boolean ultimoConcursoOcorreuA4Dias(LocalDate dtSorteio, LocalDate hoje) {
-		return Period.between(hoje, dtSorteio).getDays() >= 4;
+	private Element getTrUltimoConcursoWeb(Element trUltimoConcursoLocal) {
+
+		Element trUltimoConcursoWeb = null;
+		Element trPossivelUltimoConcursoWeb = trUltimoConcursoLocal.nextElementSibling();// aqui pode vir trs com
+																							// cidades do concurso local
+
+		while (trUltimoConcursoWeb == null) {
+
+			Elements tdPossivelUltimoConcursoWeb = trPossivelUltimoConcursoWeb.select("td:eq(0):matches(\\d)");
+
+			if (tdPossivelUltimoConcursoWeb != null && !tdPossivelUltimoConcursoWeb.isEmpty()) {
+				trUltimoConcursoWeb = trPossivelUltimoConcursoWeb;
+				break;
+			}
+
+			trPossivelUltimoConcursoWeb = trPossivelUltimoConcursoWeb.nextElementSibling();
+
+			tdPossivelUltimoConcursoWeb = trPossivelUltimoConcursoWeb.select("td:eq(0):matches(\\d)");
+
+			if (tdPossivelUltimoConcursoWeb != null && !tdPossivelUltimoConcursoWeb.isEmpty()) {
+				trUltimoConcursoWeb = tdPossivelUltimoConcursoWeb.parents().get(0);
+			}
+		}
+
+		return trUltimoConcursoWeb;
+	}
+
+	private Element getTableConcursos(Document doc) {
+		Elements tables = doc.getElementsByTag("table");
+
+		return tables.first();
+	}
+
+	private Element getTrUltimoConcursoLocal(Element table, ConcursoMegaSena ultimoConcursoLocal) {
+		Elements tdUltimoConcursoLocal = table.select("td:eq(0):matches(" + ultimoConcursoLocal.getIdConcurso() + ")");
+
+		return tdUltimoConcursoLocal.parents().get(0);
+	}
+ 
+	//TODO arrumar para quand nao consegue buscar resultado no dia do concurso (o mais recente)
+	//nao da pra esperar mais de 3 dias para fazer a busca do mais recente
+	private boolean ultimoConcursoOcorreuA4Dias(LocalDate dataConcurso, LocalDate hoje) {
+		Period periodo = Period.between(dataConcurso, hoje);
+		
+		return periodo.getMonths() > 0 || periodo.getDays() >= 3;
 	}
 
 	private boolean concursoEDeHoje(LocalDate dataConcurso, LocalDate hoje) {
+
 		return dataConcurso.isEqual(hoje);
 	}
 
