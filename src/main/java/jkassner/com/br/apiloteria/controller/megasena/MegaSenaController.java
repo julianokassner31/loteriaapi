@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,30 +14,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.sentry.SentryClient;
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
-import jkassner.com.br.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
-import jkassner.com.br.apiloteria.service.buscaResultados.BuscaResultado;
-import jkassner.com.br.apiloteria.service.megasena.ConcursoMegaSenaService;
+import jkassner.com.br.apiloteria.repository.MegaSenaRepository;
+import jkassner.com.br.apiloteria.service.MegaSenaService;
+import jkassner.com.br.apiloteria.service.ParserContentFileService;
 
 @RestController
 @RequestMapping("/megasena")
 public class MegaSenaController {
 
     @Autowired
-    ConcursoMegaSenaService concursoMegaSenaService;
+    MegaSenaService megaSenaService;
 
     @Autowired
-    ConcursoMegaSenaRepository concursoMegaSenaRepository;
+    MegaSenaRepository megaSenaRepository;
 
     @Autowired
-    @Qualifier("buscaResultadoMegaSenaService")
-    BuscaResultado buscaResultado;
+    ParserContentFileService parseContentFileServiceImpl;
     
     @Autowired
     SentryClient sentryClient;
 
     @GetMapping("/{idConcurso}")
-    public ResponseEntity<?> getConcurso(@PathVariable("idConcurso") Long idConcurso) {
-        ConcursoMegaSena concursoMegaSena = concursoMegaSenaService.findByIdConcurso(idConcurso);
+    public ResponseEntity<?> getConcurso(@PathVariable("idConcurso") Long idConcurso) throws Exception {
+        ConcursoMegaSena concursoMegaSena = megaSenaService.findByIdConcurso(idConcurso);
 
         return ResponseEntity.ok(concursoMegaSena);
     }
@@ -48,7 +46,7 @@ public class MegaSenaController {
     	
     	sentryClient.sendMessage("Iniciando busca por concursos premiados");
     	
-    	Map<String, List<ConcursoMegaSena>> concursosByDezenas = concursoMegaSenaService.findConcursosByDezenas(true, true, true, dezenasUsuario);
+    	Map<String, List<ConcursoMegaSena>> concursosByDezenas = megaSenaService.findConcursosByDezenas(true, true, true, dezenasUsuario);
     	
     	if (concursosByDezenas.isEmpty()) {
     		return ResponseEntity.noContent().build();
@@ -57,10 +55,19 @@ public class MegaSenaController {
         return ResponseEntity.ok(concursosByDezenas);
     }
 
-    @GetMapping(value="/populaResultados")
+    @GetMapping("/populaResultados")
     public ResponseEntity<?> populaResultados() throws IOException {
-        buscaResultado.populaResultados();
+    	parseContentFileServiceImpl.populaResultados();
 
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping
+//  @Cacheable
+    public ResponseEntity<?> buscaUltimoConcurso() {
+    	
+    	ConcursoMegaSena concurso = megaSenaService.getUltimoConcurso();
+    	
+    	return ResponseEntity.ok(concurso); 
     }
 }

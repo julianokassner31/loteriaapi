@@ -1,4 +1,4 @@
-package jkassner.com.br.apiloteria.repository.megasena;
+package jkassner.com.br.apiloteria.repository;
 
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Repository
-public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long> {
+public interface MegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long> {
 
     ConcursoMegaSena findByIdConcurso(Long idConcurso);
 
@@ -33,4 +33,6 @@ public interface ConcursoMegaSenaRepository extends JpaRepository<ConcursoMegaSe
         @Param("quinta") int quinta,
         @Param("sexta") int sexta
     );
+    
+    ConcursoMegaSena findFirstByOrderByDtSorteioDesc();
 }

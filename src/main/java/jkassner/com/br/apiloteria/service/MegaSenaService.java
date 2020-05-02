@@ -1,11 +1,12 @@
-package jkassner.com.br.apiloteria.service.megasena;
+package jkassner.com.br.apiloteria.service;
 
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ConcursoMegaSenaService {
+public interface MegaSenaService {
     ConcursoMegaSena findByIdConcurso(Long id);
     Map<String, List<ConcursoMegaSena>> findConcursosByDezenas(boolean findSena, boolean findQUina, boolean findQuadra, List<Integer> dezenasUsuario);
+    ConcursoMegaSena getUltimoConcurso();
 }

@@ -1,11 +1,11 @@
-package jkassner.com.br.apiloteria.service.buscaResultados.megasena;
+package jkassner.com.br.apiloteria.serviceImpl;
 
 import jkassner.com.br.apiloteria.model.Cidade;
 import jkassner.com.br.apiloteria.model.DezenasMegaSenaOrdenadas;
+import jkassner.com.br.apiloteria.repository.MegaSenaRepository;
+import jkassner.com.br.apiloteria.service.DownloadService;
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
-import jkassner.com.br.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
-import jkassner.com.br.apiloteria.service.buscaResultados.BuscaResultadoAbstract;
-import jkassner.com.br.apiloteria.service.buscaResultados.TipoLoteria;
+
 import org.hibernate.exception.DataException;
 import org.jsoup.Jsoup;
 import org.jsoup.internal.StringUtil;
@@ -17,29 +17,27 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service("buscaResultadoMegaSenaService")
-public class BuscaResultadoMegaSenaImpl extends BuscaResultadoAbstract {
+@Service("parseContentFileServiceImpl")
+public class ParserContentFileServiceImpl extends ParserContentFileAbstract {
 
     @Autowired
-    ConcursoMegaSenaRepository concursoMegaSenaRepository;
-
-    BuscaResultadoMegaSenaImpl() {
-        this.tipoLoteria = TipoLoteria.MEGASENA;
-    }
+    MegaSenaRepository concursoMegaSenaRepository;
+    
+    @Autowired
+    DownloadService downloadTodosConcursosZipMegaSena;
 
     @Override
     public void populaResultados() throws IOException {
-        baixaResultados();
-        unzipArquivosBaixados();
         parserContentFile();
     }
 
     public void parserContentFile() throws FileNotFoundException {
         
-        String contentFile = getContentFile();
+        String contentFile = downloadTodosConcursosZipMegaSena.download();
         Document doc = Jsoup.parse(contentFile);
         Element body = doc.body();
         Elements tables = body.getElementsByTag("table");
@@ -56,41 +54,10 @@ public class BuscaResultadoMegaSenaImpl extends BuscaResultadoAbstract {
 
                 // primeira tr vem os th, pulo
                 if (!concurso.isEmpty()) continue;
-
+                
+                ConcursoMegaSena concursoMegaSena = parserTrToConcursoMegaSena(trDadosConcurso);
                 Elements tdsDados = trDadosConcurso.getElementsByTag("td");
-
-                ConcursoMegaSena concursoMegaSena = new ConcursoMegaSena();
-
-                Element nrConcurso = tdsDados.get(0);
                 int nrRowspan = Integer.parseInt(tdsDados.get(0).attributes().get("rowspan"));
-
-                long id = Long.parseLong(nrConcurso.text());
-                concursoMegaSena.setIdConcurso(id);
-
-                Element dtSorteio = tdsDados.get(1);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                Date data = simpleDateFormat.parse(dtSorteio.text());
-                concursoMegaSena.setDtSorteio(data);
-
-                setDezenas(concursoMegaSena, tdsDados);
-
-                concursoMegaSena.setVlArrecadacaoTotal(converterToBigDecimal(8, tdsDados));
-                concursoMegaSena.setNrGanhadoresSena(converterToInt(9, tdsDados));
-
-                Element elCidade = tdsDados.get(10);
-                Element elUf = tdsDados.get(11);
-                addCidade(concursoMegaSena, elCidade, elUf);
-
-                concursoMegaSena.setVlRateioSena(converterToBigDecimal(12, tdsDados));
-                concursoMegaSena.setNrGanhadoresQuina(converterToInt(13, tdsDados));
-                concursoMegaSena.setVlRateioQuina(converterToBigDecimal(14, tdsDados));
-                concursoMegaSena.setNrGanhadoresQuadra(converterToInt(15, tdsDados));
-                concursoMegaSena.setVlRateioQuadra(converterToBigDecimal(16, tdsDados));
-                concursoMegaSena.setAcumulado(tdsDados.get(17).text().equals("SIM"));
-                concursoMegaSena.setVlAcumulado(converterToBigDecimal(18, tdsDados));
-                concursoMegaSena.setVlEstimativaPremio(converterToBigDecimal(19, tdsDados));
-                concursoMegaSena.setVlAcumuladoMegaVirada(converterToBigDecimal(20, tdsDados));
-
                 if (nrRowspan > 1) {
 
                     // criado porque la encima ja contei uma tr
@@ -100,9 +67,9 @@ public class BuscaResultadoMegaSenaImpl extends BuscaResultadoAbstract {
                         // tr com as cidades vem separado do concurso
                         Element trCidades = iterator.next();
                         Elements tdsCidadesUf = trCidades.getElementsByTag("td");
-
-                        elCidade = tdsCidadesUf.get(0);
-                        elUf = tdsCidadesUf.get(1);
+                        Element elCidade = tdsCidadesUf.get(0);
+                        Element elUf = tdsCidadesUf.get(1);
+                        
                         addCidade(concursoMegaSena, elCidade, elUf);
                     }
                 }
@@ -118,6 +85,42 @@ public class BuscaResultadoMegaSenaImpl extends BuscaResultadoAbstract {
                 continue;
             }
         }
+    }
+    
+    @Override
+    public ConcursoMegaSena parserTrToConcursoMegaSena(Element trDadosConcurso) {
+
+        Elements tdsDados = trDadosConcurso.getElementsByTag("td");
+        ConcursoMegaSena concursoMegaSena = new ConcursoMegaSena();
+        Element nrConcurso = tdsDados.get(0);
+        long id = Long.parseLong(nrConcurso.text());
+        concursoMegaSena.setIdConcurso(id);
+        Element dtSorteio = tdsDados.get(1);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = null;
+        try {
+			data = simpleDateFormat.parse(dtSorteio.text());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        concursoMegaSena.setDtSorteio(data);
+        setDezenas(concursoMegaSena, tdsDados);
+        concursoMegaSena.setVlArrecadacaoTotal(converterToBigDecimal(8, tdsDados));
+        concursoMegaSena.setNrGanhadoresSena(converterToInt(9, tdsDados));
+        Element elCidade = tdsDados.get(10);
+        Element elUf = tdsDados.get(11);
+        addCidade(concursoMegaSena, elCidade, elUf);
+        concursoMegaSena.setVlRateioSena(converterToBigDecimal(12, tdsDados));
+        concursoMegaSena.setNrGanhadoresQuina(converterToInt(13, tdsDados));
+        concursoMegaSena.setVlRateioQuina(converterToBigDecimal(14, tdsDados));
+        concursoMegaSena.setNrGanhadoresQuadra(converterToInt(15, tdsDados));
+        concursoMegaSena.setVlRateioQuadra(converterToBigDecimal(16, tdsDados));
+        concursoMegaSena.setAcumulado(tdsDados.get(17).text().equals("SIM"));
+        concursoMegaSena.setVlAcumulado(converterToBigDecimal(18, tdsDados));
+        concursoMegaSena.setVlEstimativaPremio(converterToBigDecimal(19, tdsDados));
+        concursoMegaSena.setVlAcumuladoMegaVirada(converterToBigDecimal(20, tdsDados));
+        
+        return concursoMegaSena;
     }
 
     private void setDezenas(ConcursoMegaSena concursoMegaSena, Elements tdsDados) {
@@ -173,6 +176,23 @@ public class BuscaResultadoMegaSenaImpl extends BuscaResultadoAbstract {
             concursoMegaSena.getCidades().add(cidade);
         }
     }
+    
+    public static void main(String[] args) {
+    	String html = "<table>"
+				+ "<tr rowpsan='2'><td>1900</td></tr>"
+				+ "<tr><td>1902</td><td>1900</td></tr>"
+				+ "<tr><td>1901</td></tr>"
+				+ "</table>";
+		
+		Document doc = Jsoup.parse(html);
+        Elements tables = doc.getElementsByTag("table");
+        Element table = tables.first();
+        Elements td = table.select("td:eq(0):matches(1900)");
+        Element tr = td.parents().get(0);
+       
+        System.out.println(tr.nextElementSibling());
+	}
+    
 }
 
 
