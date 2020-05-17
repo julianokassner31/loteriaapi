@@ -1,6 +1,8 @@
 package jkassner.com.br.apiloteria.repository;
 
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
+import jkassner.com.br.apiloteria.model.ICounterPosicao;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +37,22 @@ public interface MegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long
     );
     
     ConcursoMegaSena findFirstByOrderByDtSorteioDesc();
+    
+    @Query(name = "CounterPosicao.prDezena")
+    List<ICounterPosicao> getCounterPosicaoPrDezena();
+    
+    @Query(name = "CounterPosicao.seDezena")
+    List<ICounterPosicao> getCounterPosicaoSeDezena();
+    
+    @Query(name = "CounterPosicao.teDezena")
+    List<ICounterPosicao> getCounterPosicaoTeDezena();
+    
+    @Query(name = "CounterPosicao.qaDezena")
+    List<ICounterPosicao> getCounterPosicaoQaDezena();
+    
+    @Query(name = "CounterPosicao.qiDezena")
+    List<ICounterPosicao> getCounterPosicaoQiDezena();
+    
+    @Query(name = "CounterPosicao.sxDezena")
+    List<ICounterPosicao> getCounterPosicaoSxDezena();
 }

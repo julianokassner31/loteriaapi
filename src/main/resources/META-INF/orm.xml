@@ -87,5 +87,41 @@
                	)
         ]]></query>
     </named-query>
+    
+    <named-query name="CounterPosicao.prDezena">
+    	<query>
+    		select count(d.prDezena) as count, d.prDezena as dezena from ConcursoMegaSena d group by (d.prDezena) order by d.prDezena 
+    	</query>
+    </named-query>
+    
+    <named-query name="CounterPosicao.seDezena">
+    	<query>
+    		select count(d.seDezena) as count, d.seDezena as dezena from ConcursoMegaSena d group by (d.seDezena) order by d.seDezena 
+    	</query>
+    </named-query>
+    
+    <named-query name="CounterPosicao.teDezena">
+    	<query>
+    		select count(d.teDezena) as count, d.teDezena as dezena from ConcursoMegaSena d group by (d.teDezena) order by d.teDezena 
+    	</query>
+    </named-query>
+    
+    <named-query name="CounterPosicao.qaDezena">
+    	<query>
+    		select count(d.qaDezena) as count, d.qaDezena as dezena from ConcursoMegaSena d group by (d.qaDezena) order by d.qaDezena 
+    	</query>
+    </named-query>
+    
+    <named-query name="CounterPosicao.qiDezena">
+    	<query>
+    		select count(d.qiDezena) as count, d.qiDezena as dezena from ConcursoMegaSena d group by (d.qiDezena) order by d.qiDezena 
+    	</query>
+    </named-query>
+    
+    <named-query name="CounterPosicao.sxDezena">
+    	<query>
+    		select count(d.sxDezena) as count, d.sxDezena as dezena from ConcursoMegaSena d group by (d.sxDezena) order by d.sxDezena 
+    	</query>
+    </named-query>
 
 </entity-mappings>

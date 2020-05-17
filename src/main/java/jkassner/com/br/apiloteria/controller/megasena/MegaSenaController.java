@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.sentry.SentryClient;
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
+import jkassner.com.br.apiloteria.model.ICounterPosicao;
 import jkassner.com.br.apiloteria.repository.MegaSenaRepository;
 import jkassner.com.br.apiloteria.service.MegaSenaService;
 import jkassner.com.br.apiloteria.service.ParserContentFileService;
@@ -73,5 +74,13 @@ public class MegaSenaController {
 		ConcursoMegaSena concurso = megaSenaService.getUltimoConcurso();
 		CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
 		return ResponseEntity.ok().cacheControl(cacheControl).body(concurso);
+	}
+	
+	@GetMapping("/counter-posicoes")
+	public ResponseEntity<?> getCounterPosicao() {
+
+		Map<Long, List<ICounterPosicao>> counterPosicoes = megaSenaService.getCounterPosicoes();
+		CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
+		return ResponseEntity.ok().cacheControl(cacheControl).body(counterPosicoes);
 	}
 }
