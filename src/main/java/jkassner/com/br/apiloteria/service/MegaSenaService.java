@@ -10,5 +10,5 @@ public interface MegaSenaService {
     ConcursoMegaSena findByIdConcurso(Long id);
     Map<String, List<ConcursoMegaSena>> findConcursosByDezenas(boolean findSena, boolean findQUina, boolean findQuadra, List<Integer> dezenasUsuario);
     ConcursoMegaSena getUltimoConcurso();
-    Map<Long, List<ICounterPosicao>> getCounterPosicoes();
+	Map<Long, List<ICounterPosicao>> getCounterPosicoes(int page);
 }

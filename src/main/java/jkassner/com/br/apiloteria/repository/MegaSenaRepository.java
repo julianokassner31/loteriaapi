@@ -3,6 +3,7 @@ package jkassner.com.br.apiloteria.repository;
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
 import jkassner.com.br.apiloteria.model.ICounterPosicao;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,20 +40,20 @@ public interface MegaSenaRepository extends JpaRepository<ConcursoMegaSena, Long
     ConcursoMegaSena findFirstByOrderByDtSorteioDesc();
     
     @Query(name = "CounterPosicao.prDezena")
-    List<ICounterPosicao> getCounterPosicaoPrDezena();
+    List<ICounterPosicao> getCounterPosicaoPrDezena(Pageable pageable);
     
     @Query(name = "CounterPosicao.seDezena")
-    List<ICounterPosicao> getCounterPosicaoSeDezena();
+    List<ICounterPosicao> getCounterPosicaoSeDezena(Pageable pageable);
     
     @Query(name = "CounterPosicao.teDezena")
-    List<ICounterPosicao> getCounterPosicaoTeDezena();
+    List<ICounterPosicao> getCounterPosicaoTeDezena(Pageable pageable);
     
     @Query(name = "CounterPosicao.qaDezena")
-    List<ICounterPosicao> getCounterPosicaoQaDezena();
+    List<ICounterPosicao> getCounterPosicaoQaDezena(Pageable pageable);
     
     @Query(name = "CounterPosicao.qiDezena")
-    List<ICounterPosicao> getCounterPosicaoQiDezena();
+    List<ICounterPosicao> getCounterPosicaoQiDezena(Pageable pageable);
     
     @Query(name = "CounterPosicao.sxDezena")
-    List<ICounterPosicao> getCounterPosicaoSxDezena();
+    List<ICounterPosicao> getCounterPosicaoSxDezena(Pageable pageable);
 }

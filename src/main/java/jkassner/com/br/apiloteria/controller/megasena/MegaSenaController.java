@@ -77,9 +77,9 @@ public class MegaSenaController {
 	}
 	
 	@GetMapping("/counter-posicoes")
-	public ResponseEntity<?> getCounterPosicao() {
+	public ResponseEntity<?> getCounterPosicao(@RequestParam("page") int page) {
 
-		Map<Long, List<ICounterPosicao>> counterPosicoes = megaSenaService.getCounterPosicoes();
+		Map<Long, List<ICounterPosicao>> counterPosicoes = megaSenaService.getCounterPosicoes(page);
 		CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
 		return ResponseEntity.ok().cacheControl(cacheControl).body(counterPosicoes);
 	}

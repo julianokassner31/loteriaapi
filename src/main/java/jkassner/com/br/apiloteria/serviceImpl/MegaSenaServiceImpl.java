@@ -20,6 +20,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import jkassner.com.br.apiloteria.model.ConcursoMegaSena;
@@ -251,12 +252,13 @@ public class MegaSenaServiceImpl implements MegaSenaService {
 	}
 
 	@Override
-	public Map<Long, List<ICounterPosicao>> getCounterPosicoes() {
+	public Map<Long, List<ICounterPosicao>> getCounterPosicoes(int page) {
 		
+		PageRequest pagination = PageRequest.of(page, 10);
 		
 		Map<Long, List<ICounterPosicao>> map = new HashMap<Long, List<ICounterPosicao>>();
-		
-		List<ICounterPosicao> counterPosicaoPrDezena = megaSenaRepository.getCounterPosicaoPrDezena();
+	
+		List<ICounterPosicao> counterPosicaoPrDezena = megaSenaRepository.getCounterPosicaoPrDezena(pagination);
 		
 		counterPosicaoPrDezena.forEach(cp -> {
 			LinkedList<ICounterPosicao> counterPosicoes = new LinkedList<ICounterPosicao>();
@@ -264,27 +266,27 @@ public class MegaSenaServiceImpl implements MegaSenaService {
 			map.put(cp.getDezena(), counterPosicoes);
 		});
 		
-		List<ICounterPosicao> counterPosicaoSeDezena = megaSenaRepository.getCounterPosicaoSeDezena();
+		List<ICounterPosicao> counterPosicaoSeDezena = megaSenaRepository.getCounterPosicaoSeDezena(pagination);
 		counterPosicaoSeDezena.forEach(cp -> {
 			map.get(cp.getDezena()).add(cp);
 		});
 		
-		List<ICounterPosicao> counterPosicaoTeDezena = megaSenaRepository.getCounterPosicaoTeDezena();
+		List<ICounterPosicao> counterPosicaoTeDezena = megaSenaRepository.getCounterPosicaoTeDezena(pagination);
 		counterPosicaoTeDezena.forEach(cp -> {
 			map.get(cp.getDezena()).add(cp);
 		});
 		
-		List<ICounterPosicao> counterPosicaoQaDezena = megaSenaRepository.getCounterPosicaoQaDezena();
+		List<ICounterPosicao> counterPosicaoQaDezena = megaSenaRepository.getCounterPosicaoQaDezena(pagination);
 		counterPosicaoQaDezena.forEach(cp -> {
 			map.get(cp.getDezena()).add(cp);
 		});
 		
-		List<ICounterPosicao> counterPosicaoQiDezena = megaSenaRepository.getCounterPosicaoQiDezena();
+		List<ICounterPosicao> counterPosicaoQiDezena = megaSenaRepository.getCounterPosicaoQiDezena(pagination);
 		counterPosicaoQiDezena.forEach(cp -> {
 			map.get(cp.getDezena()).add(cp);
 		});
 		
-		List<ICounterPosicao> counterPosicaoSxDezena = megaSenaRepository.getCounterPosicaoSxDezena();
+		List<ICounterPosicao> counterPosicaoSxDezena = megaSenaRepository.getCounterPosicaoSxDezena(pagination);
 		counterPosicaoSxDezena.forEach(cp -> {
 			map.get(cp.getDezena()).add(cp);
 		});
