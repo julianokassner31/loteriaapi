@@ -61,8 +61,19 @@ public class MegaSenaController {
 	}
 
 	@GetMapping("/populaResultados")
-	public ResponseEntity<?> populaResultados() throws IOException {
-		parseContentFileServiceImpl.populaResultados();
+	public ResponseEntity<?> populaResultados() {
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					parseContentFileServiceImpl.populaResultados();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 
 		return ResponseEntity.noContent().build();
 	}
@@ -75,7 +86,7 @@ public class MegaSenaController {
 		CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
 		return ResponseEntity.ok().cacheControl(cacheControl).body(concurso);
 	}
-	
+
 	@GetMapping("/counter-posicoes")
 	public ResponseEntity<?> getCounterPosicao(@RequestParam("page") int page) {
 

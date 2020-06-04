@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
@@ -28,5 +30,5 @@ public class Cidade implements Serializable {
     @JoinColumn(name = "id_concurso_megasena", referencedColumnName = "id_concurso")
     @JsonIgnore
     private ConcursoMegaSena concursoMegaSena;
-
+    
 }

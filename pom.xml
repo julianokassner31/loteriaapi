@@ -60,6 +60,15 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			</dependency>
@@ -91,6 +100,19 @@
 		    <version>1.7.30</version>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+	    <profile>
+	        <id>dev</id>
+	        <properties>
+	            <profile.name>dev</profile.name>
+	            <db.hostname>localhost:5432</db.hostname>
+	            <db.name>loteria_api</db.name>
+	            <db.username>postgres</db.username>
+	            <db.password>postgres</db.password>
+	        </properties>
+	    </profile>
+ 	</profiles>
 
 	<build>
 		<plugins>
@@ -106,6 +128,27 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                	<baselineOnMigrate>true</baselineOnMigrate>
+			        <url>jdbc:postgresql://${db.hostname}/${db.name}</url>
+			        <user>${db.username}</user>
+			        <password>${db.password}</password>
+			        <schemas>
+			        	<schema>public</schema>
+			        </schemas>
+			        <initVersion>0</initVersion>
+    			</configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.2.9</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 		</plugins>
 	</build>
 
