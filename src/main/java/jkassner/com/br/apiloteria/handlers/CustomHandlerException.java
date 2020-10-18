@@ -1,5 +1,6 @@
 package jkassner.com.br.apiloteria.handlers;
 
+import jkassner.com.br.apiloteria.exceptions.DezenaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,17 +13,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import io.sentry.SentryClient;
 
 @ControllerAdvice
-public class SentryHandlerException extends ResponseEntityExceptionHandler {
+public class CustomHandlerException extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	SentryClient sentryClient;
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-		String bodyOfResponse = "This should be application specific";
 
 		sentryClient.sendException(ex);
 
-		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+	}
+
+	@ExceptionHandler(DezenaInvalidaException.class)
+	protected ResponseEntity<Object> dezenaInvalidaException(DezenaInvalidaException ex, WebRequest request) {
+
+		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 }

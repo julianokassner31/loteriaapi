@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jkassner.com.br.apiloteria.service.UnzipService;
-import jkassner.com.br.apiloteria.serviceImpl.TipoLoteria;
+import jkassner.com.br.apiloteria.model.TipoLoteriaDownload;
 
 @Service("downloadTodosConcursosZipMegaSena")
 public class DownloadTodosConcursosZipMegaSenaImpl extends DownloadServiceAbstract{
@@ -14,7 +14,7 @@ public class DownloadTodosConcursosZipMegaSenaImpl extends DownloadServiceAbstra
 	
 	@Override
 	public String getUri() {
-		return TipoLoteria.MEGASENA_TODOS.getUri();
+		return TipoLoteriaDownload.MEGASENA_TODOS.getUri();
 	}
 	
 	@Override

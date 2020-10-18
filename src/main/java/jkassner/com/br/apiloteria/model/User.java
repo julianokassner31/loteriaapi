@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,8 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -50,7 +53,12 @@ public class User implements UserDetails, Serializable{
 	
 	@Column(name="enabled")
 	private boolean enabled;
-	
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@JsonManagedReference
+	private List<JogoUser> jogoUsers = new ArrayList<>();
+
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="user_permission", joinColumns = {@JoinColumn(name="id_user")},
 			inverseJoinColumns = {@JoinColumn(name="id_permission")})

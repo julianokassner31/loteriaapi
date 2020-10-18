@@ -1,6 +1,6 @@
-package jkassner.com.br.apiloteria.serviceImpl;
+package jkassner.com.br.apiloteria.model;
 
-public enum TipoLoteria {
+public enum TipoLoteriaDownload {
     
 	MEGASENA_TODOS("D_megase.zip", 
     		"d_mega.htm", 
@@ -29,7 +29,7 @@ public enum TipoLoteria {
     private String arquivoHtm;
     private String uri;
 
-    TipoLoteria(String arquivoZip, String arquivoHtm, String uri) {
+    TipoLoteriaDownload(String arquivoZip, String arquivoHtm, String uri) {
         this.arquivoZip = arquivoZip;
         this.arquivoHtm = arquivoHtm;
         this.uri = uri;
