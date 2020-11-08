@@ -1,10 +1,7 @@
 package com.br.jkassner.apiloteria.serviceImpl.lotofacil;
 
 import com.br.jkassner.apiloteria.model.ConcursoLotoFacil;
-import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
-import com.br.jkassner.apiloteria.model.ICounterPosicao;
 import com.br.jkassner.apiloteria.repository.lotofacil.ConcursoLotoFacilRepository;
-import com.br.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
 import com.br.jkassner.apiloteria.service.DownloadService;
 import com.br.jkassner.apiloteria.service.ParserContentFileService;
 import com.br.jkassner.apiloteria.service.concurso.ConcursoService;
@@ -14,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -23,16 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-@Service("concursoLotoFacilServiceImpl")
+@Service
 public class ConcursoLotoFacilServiceImpl implements ConcursoService<ConcursoLotoFacil> {
 
 	@Autowired
@@ -52,12 +42,9 @@ public class ConcursoLotoFacilServiceImpl implements ConcursoService<ConcursoLot
 	}
 
 	@Override
-	public Map<String, List<ConcursoLotoFacil>> findConcursosByDezenas(boolean findSena, boolean findQuina,
-			boolean findQuadra, List<Integer> dezenasUsuario) {
-
+	public Map<String, List<ConcursoLotoFacil>> findConcursosByDezenas(List<Integer> dezenasUsuario) {
 		return null;
 	}
-
 
 	@Override
 	public ConcursoLotoFacil getUltimoConcurso() {
@@ -169,48 +156,5 @@ public class ConcursoLotoFacilServiceImpl implements ConcursoService<ConcursoLot
 		boolean passouDas21H = agora.getHour() > 21;
 
 		return hojeTem && passouDas21H;
-	}
-
-	@Override
-	public Map<Long, List<ICounterPosicao>> getCounterPosicoes(int page) {
-		
-		PageRequest pagination = PageRequest.of(page, 10);
-		
-		Map<Long, List<ICounterPosicao>> map = new HashMap<Long, List<ICounterPosicao>>();
-	
-		List<ICounterPosicao> counterPosicaoPrDezena = concursoLotoFacilRepository.getCounterPosicaoPrDezena(pagination);
-		
-		counterPosicaoPrDezena.forEach(cp -> {
-			LinkedList<ICounterPosicao> counterPosicoes = new LinkedList<ICounterPosicao>();
-			counterPosicoes.add(cp);
-			map.put(cp.getDezena(), counterPosicoes);
-		});
-		
-		List<ICounterPosicao> counterPosicaoSeDezena = concursoLotoFacilRepository.getCounterPosicaoSeDezena(pagination);
-		counterPosicaoSeDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoTeDezena = concursoLotoFacilRepository.getCounterPosicaoTeDezena(pagination);
-		counterPosicaoTeDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoQaDezena = concursoLotoFacilRepository.getCounterPosicaoQaDezena(pagination);
-		counterPosicaoQaDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoQiDezena = concursoLotoFacilRepository.getCounterPosicaoQiDezena(pagination);
-		counterPosicaoQiDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoSxDezena = concursoLotoFacilRepository.getCounterPosicaoSxDezena(pagination);
-		counterPosicaoSxDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		return map;
 	}
 }

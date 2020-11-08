@@ -1,5 +1,18 @@
 package com.br.jkassner.apiloteria.serviceImpl.megasena;
 
+import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
+import com.br.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
+import com.br.jkassner.apiloteria.service.DownloadService;
+import com.br.jkassner.apiloteria.service.ParserContentFileService;
+import com.br.jkassner.apiloteria.service.concurso.ConcursoService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -10,26 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
-import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
-import com.br.jkassner.apiloteria.model.ICounterPosicao;
-import com.br.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
-import com.br.jkassner.apiloteria.service.DownloadService;
-import com.br.jkassner.apiloteria.service.concurso.ConcursoService;
-import com.br.jkassner.apiloteria.service.ParserContentFileService;
 
 @Service("concursoMegaSenaServiceImpl")
 public class ConcursoMegaSenaServiceImpl implements ConcursoService<ConcursoMegaSena> {
@@ -50,6 +46,10 @@ public class ConcursoMegaSenaServiceImpl implements ConcursoService<ConcursoMega
 	}
 
 	@Override
+	public Map<String, List<ConcursoMegaSena>> findConcursosByDezenas(List<Integer> dezenasUsuario) {
+		return null;
+	}
+
 	public Map<String, List<ConcursoMegaSena>> findConcursosByDezenas(boolean findSena, boolean findQuina,
 			boolean findQuadra, List<Integer> dezenasUsuario) {
 
@@ -249,49 +249,48 @@ public class ConcursoMegaSenaServiceImpl implements ConcursoService<ConcursoMega
 		boolean hojeTem = hoje.equals(DayOfWeek.SATURDAY) || hoje.equals(DayOfWeek.WEDNESDAY);
 		boolean passouDas21H = agora.getHour() > 21;
 
-		return hojeTem && passouDas21H; // Pau
+		return hojeTem && passouDas21H;
 	}
 
-	@Override
-	public Map<Long, List<ICounterPosicao>> getCounterPosicoes(int page) {
-		
-		PageRequest pagination = PageRequest.of(page, 10);
-		
-		Map<Long, List<ICounterPosicao>> map = new HashMap<Long, List<ICounterPosicao>>();
-	
-		List<ICounterPosicao> counterPosicaoPrDezena = concursoMegaSenaRepository.getCounterPosicaoPrDezena(pagination);
-		
-		counterPosicaoPrDezena.forEach(cp -> {
-			LinkedList<ICounterPosicao> counterPosicoes = new LinkedList<ICounterPosicao>();
-			counterPosicoes.add(cp);
-			map.put(cp.getDezena(), counterPosicoes);
-		});
-		
-		List<ICounterPosicao> counterPosicaoSeDezena = concursoMegaSenaRepository.getCounterPosicaoSeDezena(pagination);
-		counterPosicaoSeDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoTeDezena = concursoMegaSenaRepository.getCounterPosicaoTeDezena(pagination);
-		counterPosicaoTeDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoQaDezena = concursoMegaSenaRepository.getCounterPosicaoQaDezena(pagination);
-		counterPosicaoQaDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoQiDezena = concursoMegaSenaRepository.getCounterPosicaoQiDezena(pagination);
-		counterPosicaoQiDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		List<ICounterPosicao> counterPosicaoSxDezena = concursoMegaSenaRepository.getCounterPosicaoSxDezena(pagination);
-		counterPosicaoSxDezena.forEach(cp -> {
-			map.get(cp.getDezena()).add(cp);
-		});
-		
-		return map;
-	}
+//	public Map<Long, List<CounterPosicaoService>> getCounterPosicoes(int page) {
+//
+//		PageRequest pagination = PageRequest.of(page, 10);
+//
+//		Map<Long, List<CounterPosicaoService>> map = new HashMap<Long, List<CounterPosicaoService>>();
+//
+//		List<CounterPosicaoService> counterPosicaoPrDezena = concursoMegaSenaRepository.getCounterPosicaoPrDezena(pagination);
+//
+//		counterPosicaoPrDezena.forEach(cp -> {
+//			LinkedList<CounterPosicaoService> counterPosicoes = new LinkedList<CounterPosicaoService>();
+//			counterPosicoes.add(cp);
+//			map.put(cp.getDezena(), counterPosicoes);
+//		});
+//
+//		List<CounterPosicaoService> counterPosicaoSeDezena = concursoMegaSenaRepository.getCounterPosicaoSeDezena(pagination);
+//		counterPosicaoSeDezena.forEach(cp -> {
+//			map.get(cp.getDezena()).add(cp);
+//		});
+//
+//		List<CounterPosicaoService> counterPosicaoTeDezena = concursoMegaSenaRepository.getCounterPosicaoTeDezena(pagination);
+//		counterPosicaoTeDezena.forEach(cp -> {
+//			map.get(cp.getDezena()).add(cp);
+//		});
+//
+//		List<CounterPosicaoService> counterPosicaoQaDezena = concursoMegaSenaRepository.getCounterPosicaoQaDezena(pagination);
+//		counterPosicaoQaDezena.forEach(cp -> {
+//			map.get(cp.getDezena()).add(cp);
+//		});
+//
+//		List<CounterPosicaoService> counterPosicaoQiDezena = concursoMegaSenaRepository.getCounterPosicaoQiDezena(pagination);
+//		counterPosicaoQiDezena.forEach(cp -> {
+//			map.get(cp.getDezena()).add(cp);
+//		});
+//
+//		List<CounterPosicaoService> counterPosicaoSxDezena = concursoMegaSenaRepository.getCounterPosicaoSxDezena(pagination);
+//		counterPosicaoSxDezena.forEach(cp -> {
+//			map.get(cp.getDezena()).add(cp);
+//		});
+//
+//		return map;
+//	}
 }

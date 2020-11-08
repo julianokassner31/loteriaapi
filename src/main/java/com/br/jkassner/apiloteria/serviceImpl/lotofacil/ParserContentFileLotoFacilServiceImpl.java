@@ -2,16 +2,12 @@ package com.br.jkassner.apiloteria.serviceImpl.lotofacil;
 
 import com.br.jkassner.apiloteria.model.Cidade;
 import com.br.jkassner.apiloteria.model.ConcursoLotoFacil;
-import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
 import com.br.jkassner.apiloteria.model.DezenasLotoFacilOrdenadas;
-import com.br.jkassner.apiloteria.model.DezenasMegaSenaOrdenadas;
 import com.br.jkassner.apiloteria.repository.lotofacil.ConcursoLotoFacilRepository;
-import com.br.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
+import com.br.jkassner.apiloteria.service.AbstractService;
 import com.br.jkassner.apiloteria.service.DownloadService;
 import com.br.jkassner.apiloteria.serviceImpl.ParserContentFileAbstract;
-import org.jsoup.Jsoup;
 import org.jsoup.internal.StringUtil;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service("parseContentFileLotoFacilServiceImpl")
-public class ParserContentFileLotoFacilServiceImpl extends ParserContentFileAbstract<ConcursoLotoFacil> {
+public class ParserContentFileLotoFacilServiceImpl extends ParserContentFileAbstract<ConcursoLotoFacil> implements AbstractService<ConcursoLotoFacil> {
 
     @Autowired
     ConcursoLotoFacilRepository lotoFacilRepository;
@@ -209,22 +205,6 @@ public class ParserContentFileLotoFacilServiceImpl extends ParserContentFileAbst
             concursoLotoFacil.getCidades().add(cidade);
         }
     }
-    
-    public static void main(String[] args) {
-    	String html = "<table>"
-				+ "<tr rowpsan='2'><td>1900</td></tr>"
-				+ "<tr><td>1902</td><td>1900</td></tr>"
-				+ "<tr><td>1901</td></tr>"
-				+ "</table>";
-		
-		Document doc = Jsoup.parse(html);
-        Elements tables = doc.getElementsByTag("table");
-        Element table = tables.first();
-        Elements td = table.select("td:eq(0):matches(1900)");
-        Element tr = td.parents().get(0);
-       
-        System.out.println(tr.nextElementSibling());
-	}
 }
 
 

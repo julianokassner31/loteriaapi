@@ -1,14 +1,12 @@
 package com.br.jkassner.apiloteria.service;
 
-import java.io.IOException;
-import java.util.Iterator;
-
-import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
 import org.jsoup.nodes.Element;
+
+import java.util.Iterator;
 
 public interface ParserContentFileService<T> {
 
-    public void populaResultados() throws IOException;
-    public T parserTrToConcurso(Element trDadosConcurso, Iterator<Element> iterator);
-    public String download();
+    void populaResultados();
+    T parserTrToConcurso(Element trDadosConcurso, Iterator<Element> iterator);
+    String download();
 }

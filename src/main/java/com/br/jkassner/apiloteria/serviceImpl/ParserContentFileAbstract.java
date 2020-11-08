@@ -49,11 +49,9 @@ public abstract class ParserContentFileAbstract<T> implements ParserContentFileS
 
             } catch(DataException dataException) {
                 System.out.println("Erro ao executar sql: " + dataException.getSQL());
-                continue;
 
             } catch (Exception e) {
                 e.printStackTrace();
-                continue;
             }
         }
     }
