@@ -1,7 +1,5 @@
 package com.br.jkassner.apiloteria.service;
 
-import com.br.jkassner.apiloteria.model.Concurso;
-
 import java.util.List;
 import java.util.Map;
 

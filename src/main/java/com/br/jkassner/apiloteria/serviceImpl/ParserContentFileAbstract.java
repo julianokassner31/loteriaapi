@@ -1,25 +1,23 @@
 package com.br.jkassner.apiloteria.serviceImpl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.br.jkassner.apiloteria.model.ConcursoMegaSena;
-import com.br.jkassner.apiloteria.service.DownloadService;
+import com.br.jkassner.apiloteria.repository.abstractconcurso.AbstractConcursoRepository;
+import com.br.jkassner.apiloteria.service.ParserContentFileService;
 import org.hibernate.exception.DataException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.br.jkassner.apiloteria.service.ParserContentFileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.math.BigDecimal;
+import java.util.Iterator;
 
 public abstract class ParserContentFileAbstract<T> implements ParserContentFileService<T> {
 
-    public abstract JpaRepository getRepository();
+    AbstractConcursoRepository<T> abstractConcursoRepository;
+
+    public ParserContentFileAbstract(AbstractConcursoRepository<T> abstractConcursoRepository) {
+        this.abstractConcursoRepository = abstractConcursoRepository;
+    }
 
     public void downloaAndSaveConcursos() {
 
@@ -45,7 +43,7 @@ public abstract class ParserContentFileAbstract<T> implements ParserContentFileS
 
                 T concurso = parserTrToConcurso(trDadosConcurso, iterator);
 
-                getRepository().save(concurso);
+                abstractConcursoRepository.save(concurso);
 
             } catch(DataException dataException) {
                 System.out.println("Erro ao executar sql: " + dataException.getSQL());

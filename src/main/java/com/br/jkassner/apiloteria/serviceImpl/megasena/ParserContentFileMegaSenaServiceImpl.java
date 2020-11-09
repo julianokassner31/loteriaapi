@@ -13,7 +13,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -28,15 +27,12 @@ import java.util.List;
 public class ParserContentFileMegaSenaServiceImpl extends ParserContentFileAbstract<ConcursoMegaSena> {
 
     @Autowired
-    ConcursoMegaSenaRepository concursoMegaSenaRepository;
-    
-    @Autowired
     @Qualifier("downloadTodosConcursosZipMegaSena")
     DownloadService downloadTodosConcursos;
 
-    @Override
-    public JpaRepository getRepository() {
-        return concursoMegaSenaRepository;
+    @Autowired
+    public ParserContentFileMegaSenaServiceImpl(ConcursoMegaSenaRepository concursoMegaSenaRepository) {
+        super(concursoMegaSenaRepository);
     }
 
     @Override

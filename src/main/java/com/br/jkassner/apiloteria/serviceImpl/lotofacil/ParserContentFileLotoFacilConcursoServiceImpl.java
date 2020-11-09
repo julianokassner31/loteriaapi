@@ -11,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -26,16 +25,14 @@ import java.util.List;
 public class ParserContentFileLotoFacilConcursoServiceImpl extends ParserContentFileAbstract<ConcursoLotoFacil> {
 
     @Autowired
-    ConcursoLotoFacilRepository lotoFacilRepository;
-    
-    @Autowired
     @Qualifier("downloadTodosConcursosZipLotoFacil")
     DownloadService downloadTodosConcursos;
 
-    @Override
-    public JpaRepository getRepository() {
-        return lotoFacilRepository;
+    @Autowired
+    public ParserContentFileLotoFacilConcursoServiceImpl(ConcursoLotoFacilRepository lotoFacilRepository) {
+        super(lotoFacilRepository);
     }
+
 
     @Override
     public void populaResultados() {

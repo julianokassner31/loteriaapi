@@ -1,5 +1,6 @@
 package com.br.jkassner.apiloteria.repository.abstractconcurso;
 
+import com.br.jkassner.apiloteria.repository.abstractjdbctemplate.AbstractJdbcTemplateRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -9,8 +10,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author Juliano Kassner
  */
 @NoRepositoryBean
-public interface AbstractConcursoRepository<T> extends JpaRepository<T, Long> {
+public interface AbstractConcursoRepository<T> extends JpaRepository<T, Long>, AbstractJdbcTemplateRepository {
     T findByIdConcurso(Long idConcurso);
     T findFirstByOrderByDtSorteioDesc();
-
 }
