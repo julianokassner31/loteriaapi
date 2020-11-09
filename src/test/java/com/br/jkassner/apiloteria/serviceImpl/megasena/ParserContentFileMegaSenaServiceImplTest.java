@@ -1,8 +1,6 @@
 package com.br.jkassner.apiloteria.serviceImpl.megasena;
 
-import com.br.jkassner.apiloteria.repository.lotofacil.ConcursoLotoFacilRepository;
 import com.br.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
-import com.br.jkassner.apiloteria.serviceImpl.lotofacil.ParserContentFileLotoFacilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

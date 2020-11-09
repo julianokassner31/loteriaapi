@@ -2,8 +2,8 @@ package com.br.jkassner.apiloteria.controller;
 
 import com.br.jkassner.apiloteria.model.CounterPosicao;
 import com.br.jkassner.apiloteria.model.TipoLoteria;
+import com.br.jkassner.apiloteria.service.AbstractConcursoService;
 import com.br.jkassner.apiloteria.service.ParserContentFileService;
-import com.br.jkassner.apiloteria.service.concurso.ConcursoService;
 import com.br.jkassner.apiloteria.service.counterposicao.CounterPosicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -23,14 +23,14 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractController<T> {
 
-    protected ConcursoService<T> concursoService;
+    protected AbstractConcursoService<T> concursoService;
 
     protected ParserContentFileService<T> parserContentFileService;
 
     @Autowired
     protected CounterPosicaoService counterPosicaoService;
 
-    public AbstractController(ConcursoService<T> concursoService,
+    public AbstractController(AbstractConcursoService<T> concursoService,
                               ParserContentFileService<T> parserContentFileService) {
 
         this.concursoService = concursoService;
@@ -66,9 +66,10 @@ public abstract class AbstractController<T> {
     }
 
     @GetMapping("/counterPosicoes")
-    public ResponseEntity<?> getCounterPosicao(@RequestParam("page") int page) {
+    public ResponseEntity<?> getCounterPosicao(@RequestParam("page") int page,
+                                               @RequestParam("tpLoteria") TipoLoteria tpLoteria) {
 
-        Map<Long, List<CounterPosicao>> counterPosicoes = counterPosicaoService.getCounterPosicoes(TipoLoteria.LOTOFACIL, page);
+        Map<Long, List<CounterPosicao>> counterPosicoes = counterPosicaoService.getCounterPosicoes(tpLoteria, page);
         CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
         return ResponseEntity.ok().cacheControl(cacheControl).body(counterPosicoes);
     }

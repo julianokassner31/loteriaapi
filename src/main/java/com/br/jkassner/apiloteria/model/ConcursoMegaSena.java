@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name="concurso_mega_sena")
 @Getter
 @Setter
-public class ConcursoMegaSena implements Serializable {
+public class ConcursoMegaSena implements Serializable, Concurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

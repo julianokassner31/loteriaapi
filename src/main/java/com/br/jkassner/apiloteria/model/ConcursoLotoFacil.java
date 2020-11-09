@@ -32,7 +32,7 @@ import java.util.List;
 @Table(name = "concurso_lotofacil")
 @Getter
 @Setter
-public class ConcursoLotoFacil implements Serializable {
+public class ConcursoLotoFacil implements Serializable, Concurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

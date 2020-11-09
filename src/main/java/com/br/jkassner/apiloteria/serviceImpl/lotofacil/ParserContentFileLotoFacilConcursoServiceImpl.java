@@ -4,7 +4,6 @@ import com.br.jkassner.apiloteria.model.Cidade;
 import com.br.jkassner.apiloteria.model.ConcursoLotoFacil;
 import com.br.jkassner.apiloteria.model.DezenasLotoFacilOrdenadas;
 import com.br.jkassner.apiloteria.repository.lotofacil.ConcursoLotoFacilRepository;
-import com.br.jkassner.apiloteria.service.AbstractService;
 import com.br.jkassner.apiloteria.service.DownloadService;
 import com.br.jkassner.apiloteria.serviceImpl.ParserContentFileAbstract;
 import org.jsoup.internal.StringUtil;
@@ -24,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service("parseContentFileLotoFacilServiceImpl")
-public class ParserContentFileLotoFacilServiceImpl extends ParserContentFileAbstract<ConcursoLotoFacil> implements AbstractService<ConcursoLotoFacil> {
+public class ParserContentFileLotoFacilConcursoServiceImpl extends ParserContentFileAbstract<ConcursoLotoFacil> {
 
     @Autowired
     ConcursoLotoFacilRepository lotoFacilRepository;

@@ -5,12 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.mockito.ArgumentMatchers.anyObject;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class ParserContentFileLotoFacilServiceImplTest {
 
     @Spy @InjectMocks
-    ParserContentFileLotoFacilServiceImpl serviceImpl;
+    ParserContentFileLotoFacilConcursoServiceImpl serviceImpl;
 
     @Mock
     ConcursoLotoFacilRepository lotoFacilRepository;

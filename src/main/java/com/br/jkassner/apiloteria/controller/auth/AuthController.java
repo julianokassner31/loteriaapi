@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.jkassner.apiloteria.model.User;
-import com.br.jkassner.apiloteria.repository.UserRepository;
+import com.br.jkassner.apiloteria.repository.user.UserRepository;
 import com.br.jkassner.apiloteria.security.AccountCredentialsDto;
 import com.br.jkassner.apiloteria.security.jwt.JwtTokenProvider;
 

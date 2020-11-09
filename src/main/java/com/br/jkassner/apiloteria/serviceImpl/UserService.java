@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.br.jkassner.apiloteria.model.User;
-import com.br.jkassner.apiloteria.repository.UserRepository;
+import com.br.jkassner.apiloteria.repository.user.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {

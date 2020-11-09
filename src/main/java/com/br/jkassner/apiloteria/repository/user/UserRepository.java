@@ -1,4 +1,4 @@
-package com.br.jkassner.apiloteria.repository;
+package com.br.jkassner.apiloteria.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

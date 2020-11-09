@@ -1,9 +1,9 @@
-package com.br.jkassner.apiloteria.repository.counterposicao;
+package com.br.jkassner.apiloteria.repositoryImpl.counterposicao;
 
 import br.com.jkassner.apiloteria.counterposicao.sql.CounterPosicaoSql;
 import com.br.jkassner.apiloteria.model.CounterPosicao;
 import com.br.jkassner.apiloteria.model.TipoLoteria;
-import com.br.jkassner.apiloteria.repository.AbstractRepositoryImpl;
+import com.br.jkassner.apiloteria.repositoryImpl.abstractjdbctemplate.AbstractJdbcTemplateRepositoryImpl;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class CounterPosicaoRepository extends AbstractRepositoryImpl<CounterPosicao> {
+public class CounterPosicaoRepositoryImpl extends AbstractJdbcTemplateRepositoryImpl {
 
     public Map<Long, List<CounterPosicao>> getCounterPosicoes(TipoLoteria tipoLoteria, int page) {
 

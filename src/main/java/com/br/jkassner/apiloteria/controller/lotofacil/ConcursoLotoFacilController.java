@@ -2,8 +2,8 @@ package com.br.jkassner.apiloteria.controller.lotofacil;
 
 import com.br.jkassner.apiloteria.controller.AbstractController;
 import com.br.jkassner.apiloteria.model.ConcursoLotoFacil;
+import com.br.jkassner.apiloteria.service.AbstractConcursoService;
 import com.br.jkassner.apiloteria.service.ParserContentFileService;
-import com.br.jkassner.apiloteria.service.concurso.ConcursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ public class ConcursoLotoFacilController extends AbstractController<ConcursoLoto
 
 	@Autowired
 	public ConcursoLotoFacilController(@Qualifier("concursoLotoFacilServiceImpl")
-											   ConcursoService<ConcursoLotoFacil> concursoService,
+												   AbstractConcursoService<ConcursoLotoFacil> concursoService,
 									   @Qualifier("parseContentFileLotoFacilServiceImpl")
 											   ParserContentFileService<ConcursoLotoFacil> parseContentFileServiceImpl){
 
