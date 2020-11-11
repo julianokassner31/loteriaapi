@@ -1,6 +1,5 @@
 package br.com.jkassner.apiloteria.repositoryImpl.counterposicao;
 
-import br.com.jkassner.apiloteria.counterposicao.sql.CounterPosicaoSql;
 import br.com.jkassner.apiloteria.repositoryImpl.abstractjdbctemplate.AbstractJdbcTemplateRepositoryImpl;
 import br.com.jkassner.apiloteria.model.CounterPosicao;
 import br.com.jkassner.apiloteria.model.TipoLoteria;
@@ -12,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.jkassner.apiloteria.counterposicao.sql.CounterPosicaoSql.*;
+
 @Repository
 public class CounterPosicaoRepositoryImpl extends AbstractJdbcTemplateRepositoryImpl {
 
@@ -20,7 +21,7 @@ public class CounterPosicaoRepositoryImpl extends AbstractJdbcTemplateRepository
         Map<Long, List<CounterPosicao>> map = new HashMap<>();
 
         for (String col : tipoLoteria.getColunas()) {
-            String query = String.format(CounterPosicaoSql.counter_posicao_dezena, col, col, tipoLoteria.getTabela(), col, col, page);
+            String query = String.format(counter_posicao_dezena, col, col, tipoLoteria.getTabela(), col, col, page);
             List<CounterPosicao> posicoes = getJdbcTemplate().query(query, new BeanPropertyRowMapper(CounterPosicao.class));
 
             if (map.isEmpty()) {
