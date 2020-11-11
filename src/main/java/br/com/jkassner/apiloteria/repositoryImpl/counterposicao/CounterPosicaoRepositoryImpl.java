@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.jkassner.apiloteria.counterposicao.sql.CounterPosicaoSql.*;
+import static br.com.jkassner.apiloteria.sql.CounterPosicaoSql.*;
 
 @Repository
 public class CounterPosicaoRepositoryImpl extends AbstractJdbcTemplateRepositoryImpl {
