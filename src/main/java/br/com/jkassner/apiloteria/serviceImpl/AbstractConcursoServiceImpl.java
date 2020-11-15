@@ -1,6 +1,7 @@
 package br.com.jkassner.apiloteria.serviceImpl;
 
 import br.com.jkassner.apiloteria.model.Concurso;
+import br.com.jkassner.apiloteria.model.TipoLoteria;
 import br.com.jkassner.apiloteria.repository.abstractconcurso.AbstractConcursoRepository;
 import br.com.jkassner.apiloteria.service.AbstractConcursoService;
 import br.com.jkassner.apiloteria.service.DownloadService;
@@ -9,6 +10,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -18,6 +22,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
  * @created 08/11/2020 - 02:38
@@ -74,6 +79,14 @@ public abstract class AbstractConcursoServiceImpl<T extends Concurso> implements
         }
 
         return ultimoConcursoLocal;
+    }
+
+    @Override
+    public List<T> allConcursos(int page, TipoLoteria tpLoteria) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "idConcurso");
+        PageRequest of = PageRequest.of(page, 10, sort);
+
+       return repository.findAll(of).stream().collect(Collectors.toList());
     }
 
     public T boraBuscarConcursoAtual(T ultimoConcursoLocal) {

@@ -83,4 +83,13 @@ public abstract class AbstractController<T> {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/allConcursos")
+    public ResponseEntity<?> allConcursos(@RequestParam("page") int page,
+                                         @RequestParam("tpLoteria") TipoLoteria tpLoteria) {
+
+        List<T> concursos = concursoService.allConcursos(page, tpLoteria);
+
+        return ResponseEntity.ok(concursos);
+    }
 }
