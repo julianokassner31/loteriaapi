@@ -34,7 +34,12 @@ import java.util.List;
 @Setter
 public class ConcursoLotoFacil implements Serializable, Concurso {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

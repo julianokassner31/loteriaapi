@@ -70,15 +70,7 @@ public abstract class AbstractConcursoServiceImpl<T extends Concurso> implements
             return ultimoConcursoLocal;
         }
 
-        if (hojeSaiuConcurso(agora)) {
-            return boraBuscarConcursoAtual(ultimoConcursoLocal);
-        }
-
-        if (ultimoConcursoOcorreuA4Dias(dataConcurso, agora.toLocalDate())) {
-            return boraBuscarConcursoAtual(ultimoConcursoLocal);
-        }
-
-        return ultimoConcursoLocal;
+        return boraBuscarConcursoAtual(ultimoConcursoLocal);
     }
 
     @Override
