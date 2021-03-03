@@ -1,14 +1,5 @@
 package br.com.jkassner.apiloteria.serviceImpl.megasena;
 
-import br.com.jkassner.apiloteria.model.ConcursoMegaSena;
-import br.com.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
-import br.com.jkassner.apiloteria.service.DownloadService;
-import br.com.jkassner.apiloteria.service.ParserContentFileService;
-import br.com.jkassner.apiloteria.serviceImpl.AbstractConcursoServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,19 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.jkassner.apiloteria.model.ConcursoMegaSena;
+import br.com.jkassner.apiloteria.repository.megasena.ConcursoMegaSenaRepository;
+import br.com.jkassner.apiloteria.serviceImpl.AbstractConcursoServiceImpl;
+
 @Service("concursoMegaSenaServiceImpl")
 public class ConcursoMegaSenaServiceImpl extends AbstractConcursoServiceImpl<ConcursoMegaSena> {
 
 	ConcursoMegaSenaRepository repository;
 
     @Autowired
-    public ConcursoMegaSenaServiceImpl(ConcursoMegaSenaRepository repository,
-									   @Qualifier("downloadTodosConcursosZipMegaSena")
-                                               DownloadService downloadService,
-									   @Qualifier("parseContentFileMegaSenaServiceImpl")
-                                               ParserContentFileService<ConcursoMegaSena> parseContentFileServiceImpl) {
+    public ConcursoMegaSenaServiceImpl(ConcursoMegaSenaRepository repository) {
 
-    	super(repository, downloadService, parseContentFileServiceImpl);
+    	super(repository, "/popula/megasena");
 
     	this.repository = repository;
     }

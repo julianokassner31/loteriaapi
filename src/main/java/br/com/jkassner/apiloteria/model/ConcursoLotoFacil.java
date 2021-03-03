@@ -34,6 +34,8 @@ import java.util.List;
 @Setter
 public class ConcursoLotoFacil implements Serializable, Concurso {
 
+	public ConcursoLotoFacil() {}
+	
     /**
 	 * 
 	 */

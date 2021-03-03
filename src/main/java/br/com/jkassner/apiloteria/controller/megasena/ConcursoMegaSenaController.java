@@ -1,9 +1,8 @@
 package br.com.jkassner.apiloteria.controller.megasena;
 
-import br.com.jkassner.apiloteria.controller.AbstractController;
-import br.com.jkassner.apiloteria.model.ConcursoMegaSena;
-import br.com.jkassner.apiloteria.service.ParserContentFileService;
-import br.com.jkassner.apiloteria.serviceImpl.megasena.ConcursoMegaSenaServiceImpl;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import br.com.jkassner.apiloteria.controller.AbstractController;
+import br.com.jkassner.apiloteria.model.ConcursoMegaSena;
+import br.com.jkassner.apiloteria.serviceImpl.megasena.ConcursoMegaSenaServiceImpl;
 
 @RestController
 @RequestMapping("/megasena")
@@ -23,11 +23,9 @@ public class ConcursoMegaSenaController extends AbstractController<ConcursoMegaS
 
 	@Autowired
 	public ConcursoMegaSenaController(@Qualifier("concursoMegaSenaServiceImpl")
-												  ConcursoMegaSenaServiceImpl concursoMegaSenaService,
-									  @Qualifier("parseContentFileMegaSenaServiceImpl")
-											  ParserContentFileService<ConcursoMegaSena> parserContentFileService) {
+												  ConcursoMegaSenaServiceImpl concursoMegaSenaService) {
 
-		super(concursoMegaSenaService, parserContentFileService);
+		super(concursoMegaSenaService);
 
 		this.concursoMegaSenaService = concursoMegaSenaService;
 	}

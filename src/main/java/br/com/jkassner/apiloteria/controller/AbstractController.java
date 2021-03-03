@@ -25,16 +25,12 @@ public abstract class AbstractController<T> {
 
     protected AbstractConcursoService<T> concursoService;
 
-    protected ParserContentFileService<T> parserContentFileService;
-
     @Autowired
     protected CounterPosicaoService counterPosicaoService;
 
-    public AbstractController(AbstractConcursoService<T> concursoService,
-                              ParserContentFileService<T> parserContentFileService) {
+    public AbstractController(AbstractConcursoService<T> concursoService) {
 
         this.concursoService = concursoService;
-        this.parserContentFileService = parserContentFileService;
     }
 
     @GetMapping("/{idConcurso}")
@@ -72,16 +68,6 @@ public abstract class AbstractController<T> {
         Map<Long, List<CounterPosicao>> counterPosicoes = counterPosicaoService.getCounterPosicoes(tpLoteria, page);
         CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES);
         return ResponseEntity.ok().cacheControl(cacheControl).body(counterPosicoes);
-    }
-
-    @GetMapping("/populaResultados")
-    public ResponseEntity<?> populaResultados() {
-
-        new Thread(() -> {
-            parserContentFileService.populaResultados();
-        }).start();
-
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/allConcursos")
