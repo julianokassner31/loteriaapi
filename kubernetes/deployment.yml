@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loteriaapi
+  labels:
+    app: loteriaapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loteriaapi
+  template:
+    metadata:
+      labels:
+        app: loteriaapi
+    spec:
+      containers:
+        - name: loteriaapi
+          image: julianokassner/loteriaapi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ADDRESS_POSTGRES
+              value: "postgres"
